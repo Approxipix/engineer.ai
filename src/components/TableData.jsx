@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { Table, Modal, DatePicker, Input, Button } from 'antd';
+import { Table, Modal, DatePicker, Input, Select, Button } from 'antd';
 import TableService from '../services/TableService';
 const { Search } = Input;
+const { Option } = Select;
 
 const TableData = () => {
   const tableContent = document.querySelector('.ant-table-body');
   const { isFetching, data } = useSelector(state => state);
   const [showModal, setShowModal] = useState(false);
   const [selectedRow, setSelectedRow] = useState({});
+  const [searchBy, setSearchBy] = useState('');
 
   const handleScroll = e => {
     const { offsetHeight, scrollTop, scrollHeight } = e.target;
@@ -97,16 +99,30 @@ const TableData = () => {
 
   return (
     <>
-      <Search
-        placeholder="Search"
-        size="large"
-        enterButton
-        onSearch={value => {
-          tableContent.scrollTo({ top: 0 });
-          TableService.searchData(value);
-        }}
-        style={{ width: 450, marginBottom: 16 }}
-      />
+      <Input.Group compact>
+        <Select
+          size="large"
+          allowClear
+          placeholder="Select"
+          value={searchBy || undefined}
+          onChange={value => setSearchBy(value)}
+          style={{ width: 120 }}
+        >
+          <Option value="title">Title</Option>
+          <Option value="url">Url</Option>
+          <Option value="created_at">Created At</Option>
+        </Select>
+        <Search
+          placeholder="Search"
+          size="large"
+          enterButton
+          onSearch={value => {
+            tableContent.scrollTo({ top: 0 });
+            TableService.searchData(value, searchBy);
+          }}
+          style={{ width: 450, marginBottom: 16 }}
+        />
+      </Input.Group>
       <Table
         bordered
         size="middle"

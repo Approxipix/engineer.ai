@@ -13,7 +13,7 @@ export const addData = ({ page, totalPage, data, isLoadMore }) => ({
   payload: { page, totalPage, data, isLoadMore },
 });
 
-export const setSearch = value => ({
+export const setSearch = (value, searchBy) => ({
   type: c.SET_SEARCH,
-  payload: value,
+  payload: ({ value, searchBy }),
 });

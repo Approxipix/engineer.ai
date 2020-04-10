@@ -5,6 +5,7 @@ const initialState = {
   page: null,
   totalPage: null,
   search: '',
+  searchBy: '',
   data: [],
 };
 
@@ -35,9 +36,11 @@ const reducer = (state = initialState, action) => {
     }
 
     case c.SET_SEARCH: {
+      const { value, searchBy } = action.payload;
       return {
         ...state,
-        search: action.payload,
+        search: value,
+        searchBy,
       }
     }
 

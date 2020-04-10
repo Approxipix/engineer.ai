@@ -3,10 +3,11 @@ import * as a from '../redux/actions';
 import { notification } from 'antd';
 
 class TableService {
-  static loadData = ({ page = 0, search, isLoadMore } = {}) => {
+  static loadData = ({ page = 0, search, searchBy, isLoadMore } = {}) => {
     const url = new URL('https://hn.algolia.com/api/v1/search');
     const params = { page, tags: 'story' };
     if (search) params.query = search;
+    if (searchBy) params.restrictSearchableAttributes = searchBy;
     Object.keys(params).forEach((key => url.searchParams.append(key, params[key])));
 
     store.dispatch(dispatch => {
@@ -35,9 +36,9 @@ class TableService {
   };
 
   static loadMoreData = () => {
-    const { isFetching, page, totalPage, search } = store.getState();
+    const { isFetching, page, totalPage, search, searchBy } = store.getState();
     if (isFetching || page >= totalPage) return;
-    this.loadData({ page: page + 1, isLoadMore: true, search });
+    this.loadData({ page: page + 1, isLoadMore: true, search, searchBy });
   };
 
   static loadByTimer = () => {
@@ -48,9 +49,9 @@ class TableService {
     }, 10000)
   };
 
-  static searchData = value => {
-    store.dispatch(a.setSearch(value));
-    this.loadData({ search: value });
+  static searchData = (value, searchBy) => {
+    store.dispatch(a.setSearch(value, searchBy));
+    this.loadData({ search: value, searchBy });
   };
 }
 
